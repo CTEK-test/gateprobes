@@ -26,15 +26,13 @@ int main(int argc, char** argv)
     simulation->ProbeAllGates(); // FIX probe gates every run
         
     simulation->Run();
-    if (json)
+    if (json) {
         simulation->UndoProbeAllGates();
-    if (argc >= 3 && "json" == std::string(argv[2]))
-    {
         boost::property_tree::ptree simResult = simulation->GetJson();
-        std::ofstream output("circuit.jsonp", std::ios::out);
         std::stringstream ss;
-        output << "onJsonp(";
         boost::property_tree::write_json(ss, simResult); // FIX reduce << operation on file stream
+        std::ofstream output("circuit.jsonp", std::ios::out);
+        output << "onJsonp(";
         output << ss.str();
         output << ");\n";
     }

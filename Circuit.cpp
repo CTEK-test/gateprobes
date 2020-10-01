@@ -50,7 +50,7 @@ void Circuit::AddGate(std::string name, std::string typeName, std::vector<std::s
 	GateType& type = m_gateTypes[typeName];
 	auto [pair, _] = m_gates.insert({ name, Gate(name, &type) });
 	auto& gate = pair->second;
-	for (unsigned i = 0; i < inputNames.size() ; ++i)
+	for (auto i = 0; i < inputNames.size() ; ++i)
 	{
 		auto& target = m_gates[inputNames[i]];
 		gate.ConnectInput(i, &target);
@@ -76,12 +76,12 @@ std::vector<Gate*> Circuit::ProbeAllGates()
 	return probed;
 }
 
-boost::property_tree::ptree Circuit::GetJson()
+boost::property_tree::ptree Circuit::GetJson() const
 {
-	boost::property_tree::ptree pt;
 	std::vector<std::future<std::pair<std::string, boost::property_tree::ptree>>> temp;
 	for (const auto& [k, v] : m_gates) // FIX fill gates in parallel
 		temp.emplace_back(std::async(std::launch::async, [&v] {return std::make_pair(std::string(""), v.GetJson()); }));
+	boost::property_tree::ptree pt;
 	for (auto& v : temp)
 		pt.push_back(v.get());
 	boost::property_tree::ptree ret;

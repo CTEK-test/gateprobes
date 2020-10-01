@@ -32,7 +32,7 @@ public:
         int counter = 1 ;
         auto i = ++m_queue.begin(); // FIX iterating from second element
         while (counter<m_queue_size) {// FIX index, faster than iterator
-            const auto val = *i;// FIX avoid coping twice
+            const auto& val = *i;// FIX avoid coping twice
             if (val < min)
             {
                 min = val;
